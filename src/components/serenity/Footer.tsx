@@ -5,13 +5,16 @@ const Footer = () => {
     <footer className="bg-background text-foreground border-t border-border py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
+
+          {/* BRAND */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-serif font-bold text-xl">
-                  S
-                </span>
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Place of Serenity Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-serif font-semibold text-xl">
                 Place of Serenity
@@ -31,7 +34,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* QUICK LINKS */}
           <div>
             <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -58,7 +61,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* CONTACT */}
           <div>
             <h4 className="font-semibold mb-4">Contact Us</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
@@ -88,10 +91,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* BOTTOM BAR */}
         <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 Place of Serenity. All rights reserved.
+            © 2025 Place of Serenity. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-foreground transition-colors">
@@ -101,7 +104,7 @@ const Footer = () => {
               Terms of Service
             </a>
           </div>
-        </div>
+        </div> 
       </div>
     </footer>
   );

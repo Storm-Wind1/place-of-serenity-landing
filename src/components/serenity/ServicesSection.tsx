@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import wellnessHolistic from "@/assets/wellness-holistic.jpg";
 import therapyRoom from "@/assets/therapy-room.jpg";
 
 const conditions = [
-  "Depression",
-  "Generalised Anxiety Disorder",
-  "Panic Disorder",
-  "Schizophrenia",
-  "Personality Disorders",
-  "Post Traumatic Stress Disorder",
-  "Social Anxiety",
-  "Eating Disorders",
-  "Bipolar Disorder",
-  "And many more...",
+  { name: "Depression", link: "/conditions/depression" },
+  { name: "Generalised Anxiety Disorder", link: "/conditions/anxiety" },
+  { name: "Panic Disorder", link: "/conditions/panic" },
+  { name: "Schizophrenia", link: "/conditions/schizophrenia" },
+  { name: "Personality Disorders", link: "/conditions/personality" },
+  { name: "Post Traumatic Stress Disorder", link: "/conditions/ptsd" },
+  { name: "Social Anxiety", link: "/conditions/social-anxiety" },
+  { name: "Eating Disorders", link: "/conditions/eating" },
+  { name: "Bipolar Disorder", link: "/conditions/bipolar" },
+  { name: "And many more...", link: "/conditions/more" },
 ];
 
 const features = [
-  "Availability of a comprehensive range of mental health services in one location",
   "Collaborative efforts of a multidisciplinary team with diverse expertise",
   "Integration of medical, psychological, and social aspects of treatment",
   "Personalised care plans addressing individual needs and circumstances",
@@ -29,12 +29,9 @@ const ServicesSection = () => {
   const [highlight, setHighlight] = useState(false);
   const imageSectionRef = useRef<HTMLDivElement | null>(null);
 
-  /* Highlight images when they scroll into view */
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setHighlight(true);
-      },
+      ([entry]) => entry.isIntersecting && setHighlight(true),
       { threshold: 0.4 }
     );
 
@@ -55,26 +52,25 @@ const ServicesSection = () => {
             Comprehensive Mental Health Care
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Patients admitted at Place of Serenity will be assessed for case-specific intervention. 
-            They will be under 24/7 observation while undergoing sessions with all the multidisciplinary 
-            team members.
+            Patients admitted at Place of Serenity will be assessed for case-specific
+            intervention and monitored 24/7 by a multidisciplinary care team.
           </p>
         </div>
 
-        {/* CONDITIONS */}
         <div className="bg-card rounded-2xl p-8 md:p-12 card-shadow">
+
+          {/* FEATURES */}
           <h3 className="font-serif text-2xl text-foreground mb-8 text-center">
-            Conditions We Treat
+            Availability of a comprehensive range of mental health services in one location
           </h3>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
-            {conditions.map((condition) => (
-              <div
-                key={condition}
-                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition"
-              >
-                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                <span>{condition}</span>
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            {features.map((feature) => (
+              <div key={feature} className="flex gap-4 p-5 rounded-xl bg-secondary/40">
+                <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0" />
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  {feature}
+                </p>
               </div>
             ))}
           </div>
@@ -82,7 +78,7 @@ const ServicesSection = () => {
           {/* IMAGES */}
           <div
             ref={imageSectionRef}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
           >
             {[wellnessHolistic, therapyRoom].map((img, i) => (
               <div
@@ -95,11 +91,7 @@ const ServicesSection = () => {
                   hover:scale-105 hover:ring-4 hover:ring-primary/60
                 `}
               >
-                <img
-                  src={img}
-                  alt="Facility preview"
-                  className="w-full h-[22rem] object-cover"
-                />
+                <img src={img} className="w-full h-[22rem] object-cover" />
                 <span className="absolute bottom-4 right-4 text-xs bg-black/60 text-white px-3 py-1 rounded-full">
                   Click to expand
                 </span>
@@ -107,18 +99,28 @@ const ServicesSection = () => {
             ))}
           </div>
 
-          {/* FEATURES */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature) => (
-              <div
-                key={feature}
-                className="flex gap-4 p-5 rounded-xl bg-secondary/40"
+          {/* CONDITIONS */}
+          <h3 className="font-serif text-2xl text-foreground mb-2 text-center">
+            Conditions We Treat
+          </h3>
+
+          <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Click on any condition below to learn more about the disorder,
+            its symptoms, and how it is treated at Place of Serenity.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {conditions.map((condition) => (
+              <Link
+                key={condition.name}
+                to={condition.link}
+                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition group"
               >
-                <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0" />
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {feature}
-                </p>
-              </div>
+                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                <span className="group-hover:text-primary transition-colors">
+                  {condition.name}
+                </span>
+              </Link>
             ))}
           </div>
         </div>
@@ -144,7 +146,6 @@ const ServicesSection = () => {
           </button>
           <img
             src={activeImage}
-            alt="Expanded view"
             className="max-h-[90vh] max-w-[90vw] rounded-2xl shadow-2xl"
           />
         </div>

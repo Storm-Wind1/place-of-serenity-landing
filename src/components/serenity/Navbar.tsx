@@ -2,6 +2,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useState } from "react";
+import logo from "@/assets/logo.png"; // 👈 ADD THIS
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,14 +18,17 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Logo */}
           <a href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-serif font-bold text-xl">
-                S
-              </span>
+            <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center overflow-hidden border border-border">
+              <img
+                src={logo}
+                alt="Place of Serenity logo"
+                className="w-full h-full object-contain"
+              />
             </div>
+
             <div>
               <span className="font-serif font-semibold text-lg text-foreground">
                 Place of Serenity
@@ -72,11 +76,7 @@ const Navbar = () => {
             className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
 
