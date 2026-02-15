@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+// src/components/serenity/ServicesSection.tsx
+import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import wellnessHolistic from "@/assets/wellness-holistic.jpg";
@@ -24,25 +25,48 @@ const features = [
   "Focus on long-term recovery, well-being, and improved quality of life",
 ];
 
-const ServicesSection = () => {
+const ServicesSection: React.FC = () => {
   const [activeImage, setActiveImage] = useState<string | null>(null);
   const [highlight, setHighlight] = useState(false);
   const imageSectionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => entry.isIntersecting && setHighlight(true),
-      { threshold: 0.4 }
+      ([entry]) => {
+        if (entry.isIntersecting) setHighlight(true);
+      },
+      { threshold: 0.35 }
     );
 
     if (imageSectionRef.current) observer.observe(imageSectionRef.current);
-    return () => observer.disconnect();
+    return () => {
+      try {
+        observer.disconnect();
+      } catch {
+        /* noop */
+      }
+    };
   }, []);
+
+  // Close modal helper (used by overlay click and Escape key)
+  const closeModal = () => setActiveImage(null);
+
+  // Handle Escape key when modal is open
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeModal();
+    };
+    if (activeImage) {
+      window.addEventListener("keydown", onKey);
+    }
+    return () => {
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [activeImage]);
 
   return (
     <section id="services" className="py-24 md:py-32 bg-secondary/50">
       <div className="container mx-auto px-4">
-
         {/* HEADER */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <p className="text-primary uppercase tracking-[0.2em] text-sm font-medium mb-4">
@@ -58,7 +82,6 @@ const ServicesSection = () => {
         </div>
 
         <div className="bg-card rounded-2xl p-8 md:p-12 card-shadow">
-
           {/* FEATURES */}
           <h3 className="font-serif text-2xl text-foreground mb-8 text-center">
             Availability of a comprehensive range of mental health services in one location
@@ -75,30 +98,6 @@ const ServicesSection = () => {
             ))}
           </div>
 
-          {/* IMAGES */}
-          <div
-            ref={imageSectionRef}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
-          >
-            {[wellnessHolistic, therapyRoom].map((img, i) => (
-              <div
-                key={i}
-                onClick={() => setActiveImage(img)}
-                className={`
-                  relative cursor-zoom-in rounded-2xl overflow-hidden
-                  transition-all duration-500
-                  ${highlight ? "ring-2 ring-primary/40 shadow-xl scale-[1.02]" : ""}
-                  hover:scale-105 hover:ring-4 hover:ring-primary/60
-                `}
-              >
-                <img src={img} className="w-full h-[22rem] object-cover" />
-                <span className="absolute bottom-4 right-4 text-xs bg-black/60 text-white px-3 py-1 rounded-full">
-                  Click to expand
-                </span>
-              </div>
-            ))}
-          </div>
-
           {/* CONDITIONS */}
           <h3 className="font-serif text-2xl text-foreground mb-2 text-center">
             Conditions We Treat
@@ -109,7 +108,7 @@ const ServicesSection = () => {
             its symptoms, and how it is treated at Place of Serenity.
           </p>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {conditions.map((condition) => (
               <Link
                 key={condition.name}
@@ -123,15 +122,58 @@ const ServicesSection = () => {
               </Link>
             ))}
           </div>
-        </div>
 
-        {/* HOW WE HELP */}
-        <div className="mt-16 p-8 rounded-2xl bg-primary/5 border border-primary/10 text-center">
-          <h3 className="font-serif text-2xl mb-4">How We Help</h3>
-          <p className="text-muted-foreground max-w-3xl mx-auto">
-            Patients are equipped with coping and relapse-prevention skills,
-            ensuring long-term recovery and continuity of care.
-          </p>
+          {/* HOW WE HELP (images placed here, spaced and unboxed; centered text) */}
+          <div
+            className="mt-8 p-8 rounded-2xl bg-primary/5 border border-primary/10"
+            aria-labelledby="how-we-help-heading"
+          >
+            <h4
+              id="how-we-help-heading"
+              className="font-serif text-2xl mb-4 text-foreground text-center"
+            >
+              How We Help
+            </h4>
+
+            <p className="text-muted-foreground max-w-3xl mx-auto mb-6 text-center">
+              Patients are equipped with coping and relapse-prevention skills,
+              ensuring long-term recovery and continuity of care.
+            </p>
+
+            {/* Images: not boxed, spaced with gap, responsive */}
+            <div
+              ref={imageSectionRef}
+              className={`flex flex-col md:flex-row items-stretch gap-6 justify-center ${highlight ? "animate-fade-in" : ""}`}
+            >
+              <button
+                type="button"
+                onClick={() => setActiveImage(wellnessHolistic)}
+                className="flex-1 overflow-hidden rounded-lg hover:scale-[1.02] transition-transform shadow-sm focus:outline-none"
+                aria-label="Open wellness image"
+              >
+                <img
+                  src={wellnessHolistic}
+                  alt="Wellness holistic environment at Place of Serenity"
+                  className="w-full h-56 md:h-48 object-cover"
+                  loading="lazy"
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveImage(therapyRoom)}
+                className="flex-1 overflow-hidden rounded-lg hover:scale-[1.02] transition-transform shadow-sm focus:outline-none"
+                aria-label="Open therapy room image"
+              >
+                <img
+                  src={therapyRoom}
+                  alt="Therapy room at Place of Serenity"
+                  className="w-full h-56 md:h-48 object-cover"
+                  loading="lazy"
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -139,15 +181,34 @@ const ServicesSection = () => {
       {activeImage && (
         <div
           className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center px-4"
-          onClick={() => setActiveImage(null)}
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview dialog"
+          tabIndex={-1}
         >
-          <button className="absolute top-6 right-6 text-white">
-            <X size={32} />
-          </button>
-          <img
-            src={activeImage}
-            className="max-h-[90vh] max-w-[90vw] rounded-2xl shadow-2xl"
-          />
+          {/* Make this container shrink to content so the backdrop reaches closer to the image.
+              Removing w-full prevents the inner wrapper from covering the full viewport width,
+              which makes clicks nearer the image hit the overlay and close the modal. */}
+          <div
+            className="relative inline-block max-w-[90vw] mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-6 right-6 text-white p-2 rounded-full hover:bg-white/10 focus:outline-none"
+              aria-label="Close image"
+            >
+              <X size={28} />
+            </button>
+
+            <img
+              src={activeImage}
+              className="max-h-[90vh] max-w-[90vw] rounded-2xl shadow-2xl"
+              alt="Expanded"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
     </section>

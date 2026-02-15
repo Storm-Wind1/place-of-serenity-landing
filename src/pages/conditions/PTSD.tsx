@@ -1,6 +1,6 @@
 import ConditionPageLayout from "@/components/serenity/ConditionPageLayout";
 
-const PTSD = () => {
+const PTSD = () => {  
   return (
     <ConditionPageLayout
       title="Post Traumatic Stress Disorder"

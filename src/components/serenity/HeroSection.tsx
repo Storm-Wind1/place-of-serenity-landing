@@ -1,8 +1,71 @@
+// src/components/serenity/HeroSection.tsx
+import React, { useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
 import heroImage from "@/assets/hero-serenity.jpg";
 
-const HeroSection = () => {
+/**
+ * Ultra-smooth scroll helper (slowed by 50%)
+ * - duration default 2400ms (was 1600ms)
+ * - accounts for fixed header height if present
+ * - uses easeOutQuart for a smooth deceleration
+ */
+const scrollToIdUltraSmooth = (id: string, duration = 2400) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const header = document.querySelector("header");
+  const headerOffset = header ? (header as HTMLElement).clientHeight : 80;
+
+  const start = window.pageYOffset;
+  const targetY = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+  const distance = targetY - start;
+  const startTime = performance.now();
+
+  // easeOutQuart
+  const ease = (t: number) => 1 - Math.pow(1 - t, 4);
+
+  const step = (now: number) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    const eased = ease(progress);
+    window.scrollTo(0, Math.round(start + distance * eased));
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
+};
+
+const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSchedule = useCallback(() => {
+    // If already on the index page, ultra-smooth scroll to contact section
+    if (location.pathname === "/") {
+      // small delay to allow UI to settle on mobile
+      setTimeout(() => scrollToIdUltraSmooth("contact", 2400), 150);
+      return;
+    }
+
+    // Otherwise navigate to index and let Index handle scrolling via state
+    navigate("/", { state: { scrollTo: "contact" } });
+  }, [location.pathname, navigate]);
+
+  const handleArrowClick = useCallback(() => {
+    // If already on the index page, ultra-smooth scroll to about
+    if (location.pathname === "/") {
+      setTimeout(() => scrollToIdUltraSmooth("about", 2400), 150);
+      return;
+    }
+
+    // If not on index, navigate to index and pass state so Index will scroll after mount
+    navigate("/", { state: { scrollTo: "about" } });
+  }, [location.pathname, navigate]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -13,7 +76,7 @@ const HeroSection = () => {
           className="w-full h-full object-cover"
         />
 
-        {/* Neutral overlay (NO THEME, NO FOG) */}
+        {/* Neutral overlay */}
         <div className="absolute inset-0 bg-black/35" />
       </div>
 
@@ -32,9 +95,7 @@ const HeroSection = () => {
             style={{ animationDelay: "0.4s" }}
           >
             Find Your Path to{" "}
-            <span className="italic text-serenity-sage-light">
-              Inner Peace
-            </span>
+            <span className="italic text-serenity-sage-light">Inner Peace</span>
           </h1>
 
           <p
@@ -49,28 +110,31 @@ const HeroSection = () => {
             className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in"
             style={{ animationDelay: "0.8s" }}
           >
-            <Button variant="serenity" size="lg">
-              Schedule Consultation
-            </Button>
-
-            <Button
-              variant="serenity-outline"
-              size="lg"
-              className="border-white/40 text-white hover:bg-white/10"
-            >
-              Learn More
+            <Button variant="serenity" size="lg" onClick={handleSchedule}>
+              Get In Touch
             </Button>
           </div>
+
+          {/* Short message prompting users to scroll for more */}
+          <p
+            className="mt-4 text-sm text-white/80 opacity-0 animate-fade-in"
+            style={{ animationDelay: "1s" }}
+          >
+            Want to learn more? Scroll down to explore our services, facility,
+            testimonials, and how to get in touch.
+          </p>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <a
-        href="#about"
+      {/* Ultra-smooth Scroll Indicator (button) */}
+      <button
+        type="button"
+        onClick={handleArrowClick}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 hover:text-white transition-colors animate-float"
+        aria-label="Scroll to about section"
       >
         <ArrowDown className="h-6 w-6" />
-      </a>
+      </button>
     </section>
   );
 };

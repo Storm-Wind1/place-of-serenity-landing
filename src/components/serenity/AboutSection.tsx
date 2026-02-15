@@ -47,15 +47,15 @@ const AboutSection = () => {
               under-service of psychiatric care in Namibia.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              We have assembled a multidisciplinary team of dedicated professionals who work collaboratively 
-              to deliver comprehensive and personalised services to our patients.
+              This exceptional care is delivered by our multidisciplinary team of dedicated professionals. 
+              Comprised of social workers, psychiatrists, psychologists, occupational therapists, doctors, and nurses, this team works collaboratively to ensure every patient receives comprehensive and personalised services.
             </p>
           </div>
           <div className="relative">
             <img
               src={facilityExterior}
               alt="Place of Serenity facility"
-              className="rounded-2xl card-shadow w-full h-[400px] object-cover"
+              className="rounded-2xl card-shadow w-full h-[400px] h-auto object-contain"
             />
             <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full bg-accent/50 -z-10" />
           </div>

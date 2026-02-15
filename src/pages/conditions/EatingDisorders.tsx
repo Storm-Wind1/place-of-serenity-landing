@@ -1,6 +1,7 @@
 import ConditionPageLayout from "@/components/serenity/ConditionPageLayout";
 
 const EatingDisorders = () => {
+  
   return (
     <ConditionPageLayout
       title="Eating Disorders"
